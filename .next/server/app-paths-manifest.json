@@ -1,8 +1,7 @@
 {
-  "/dashboard/attendance/page": "app/dashboard/attendance/page.js",
-  "/dashboard/grades/page": "app/dashboard/grades/page.js",
-  "/dashboard/bulletins/page": "app/dashboard/bulletins/page.js",
-  "/dashboard/classes/page": "app/dashboard/classes/page.js",
   "/dashboard/registrations/page": "app/dashboard/registrations/page.js",
+  "/dashboard/grades/page": "app/dashboard/grades/page.js",
+  "/dashboard/classes/page": "app/dashboard/classes/page.js",
+  "/dashboard/bulletins/page": "app/dashboard/bulletins/page.js",
   "/dashboard/students/page": "app/dashboard/students/page.js"
 }
