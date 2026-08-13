@@ -217,5 +217,6 @@ ALTER TABLE public.grades ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.attendance ENABLE ROW LEVEL SECURITY;
 
 -- Dynamic tenant isolation policy template
-CREATE POLICY school_isolation_policy ON public.students
+DROP POLICY IF EXISTS "school_isolation_policy" ON public.students;
+CREATE POLICY "school_isolation_policy" ON public.students
     USING (school_id = (auth.jwt() ->> 'school_id')::uuid);
