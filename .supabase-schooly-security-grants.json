@@ -1,0 +1,5 @@
+{
+  "project_id": "ljvnnpwwmhzdctvflsxb",
+  "name": "schooly_restrict_membership_function",
+  "query": "revoke execute on function public.is_school_member(uuid) from public, anon;\ngrant execute on function public.is_school_member(uuid) to authenticated;"
+}

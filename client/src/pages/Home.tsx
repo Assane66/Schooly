@@ -4,6 +4,7 @@
  */
 import { useMemo, useState } from "react";
 import {
+  ArrowRight,
   ArrowUpRight,
   Bell,
   BookOpenCheck,
@@ -28,6 +29,10 @@ import {
   X,
 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/lib/supabase";
+import { trpc } from "@/lib/trpc";
+import { useEffect } from "react";
+import { useLocation } from "wouter";
 
 type NavItem = {
   label: string;
@@ -58,13 +63,14 @@ const navGroups: { label?: string; items: NavItem[] }[] = [
   },
 ];
 
-const students = [
-  { name: "Aïssatou Ndiaye", id: "ELV-2026-00142", className: "4e B", status: "À jour", avatar: "/manus-storage/schooly-avatar-c_e9abd99f.png" },
-  { name: "Mamadou Ba", id: "ELV-2026-00123", className: "4e B", status: "À suivre", initials: "MB" },
-  { name: "Sokhna Diop", id: "ELV-2026-00156", className: "4e A", status: "À jour", initials: "SD" },
-  { name: "Ibrahima Fall", id: "ELV-2026-00117", className: "5e A", status: "À jour", initials: "IF" },
-  { name: "Marième Sarr", id: "ELV-2026-00168", className: "3e C", status: "Paiement en attente", initials: "MS" },
-];
+type SchoolyStudent = {
+  id: string;
+  student_number: string;
+  first_name: string;
+  last_name: string;
+  status: "active" | "inactive" | "graduated" | "withdrawn";
+  photo_url: string | null;
+};
 
 const activity = [
   { title: "Présences finalisées", text: "M. Diallo · 4e B", time: "Il y a 12 min", icon: UserCheck, tone: "green" },
@@ -204,22 +210,34 @@ function Dashboard({ onAction }: { onAction: (name: string) => void }) {
   );
 }
 
-function StudentsPage({ onAction }: { onAction: (name: string) => void }) {
+function StudentsPage({ schoolId, onAction }: { schoolId: string; onAction: (name: string) => void }) {
   const [query, setQuery] = useState("");
-  const visibleStudents = useMemo(() => students.filter((student) => student.name.toLowerCase().includes(query.toLowerCase()) || student.id.toLowerCase().includes(query.toLowerCase())), [query]);
+  const [students, setStudents] = useState<SchoolyStudent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
+  const uploadSignature = trpc.media.createUploadSignature.useMutation();
+  const loadStudents = async () => { setLoading(true); const { data, error } = await supabase.from("students").select("id, student_number, first_name, last_name, status, photo_url").eq("school_id", schoolId).order("last_name"); if (error) { toast.error("Impossible de charger les élèves", { description: error.message }); } else { setStudents((data ?? []) as SchoolyStudent[]); } setLoading(false); };
+  useEffect(() => { void loadStudents(); }, [schoolId]);
+  const visibleStudents = useMemo(() => students.filter((student) => `${student.first_name} ${student.last_name}`.toLowerCase().includes(query.toLowerCase()) || student.student_number.toLowerCase().includes(query.toLowerCase())), [query, students]);
+  const createStudent = async (event: React.FormEvent<HTMLFormElement>) => { event.preventDefault(); setSaving(true); const studentNumber = `ELV-${new Date().getFullYear()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 7).toUpperCase()}`; const { data, error } = await supabase.from("students").insert({ school_id: schoolId, student_number: studentNumber, first_name: firstName.trim(), last_name: lastName.trim(), status: "active" }).select("id, student_number, first_name, last_name, status, photo_url").single(); if (error || !data) { setSaving(false); toast.error("L’élève n’a pas été créé", { description: error?.message }); return; } let createdStudent = data as SchoolyStudent; if (photoFile) { try { const signed = await uploadSignature.mutateAsync({ schoolId, kind: "student-photo" }); const payload = new FormData(); payload.append("file", photoFile); payload.append("api_key", signed.apiKey); payload.append("timestamp", String(signed.timestamp)); payload.append("folder", signed.folder); payload.append("signature", signed.signature); const uploadResponse = await fetch(signed.endpoint, { method: "POST", body: payload }); const upload = await uploadResponse.json() as { secure_url?: string; public_id?: string; bytes?: number }; if (!uploadResponse.ok || !upload.secure_url || !upload.public_id) throw new Error("La photo n’a pas pu être envoyée."); const { data: updated, error: updateError } = await supabase.from("students").update({ photo_url: upload.secure_url, photo_cloudinary_public_id: upload.public_id }).eq("id", data.id).select("id, student_number, first_name, last_name, status, photo_url").single(); if (updateError || !updated) throw updateError ?? new Error("La photo n’a pas pu être enregistrée."); createdStudent = updated as SchoolyStudent; await supabase.from("media_assets").insert({ school_id: schoolId, owner_id: (await supabase.auth.getUser()).data.user?.id ?? null, kind: "student_photo", cloudinary_public_id: upload.public_id, delivery_url: upload.secure_url, mime_type: photoFile.type, bytes: upload.bytes ?? null }); } catch (uploadError) { toast.error("Élève créé sans photo", { description: uploadError instanceof Error ? uploadError.message : "Le transfert média a échoué." }); } } setSaving(false); setStudents((current) => [createdStudent, ...current]); setFirstName(""); setLastName(""); setPhotoFile(null); setShowForm(false); toast.success("Élève ajouté", { description: `${firstName} ${lastName} est maintenant dans votre établissement.` }); };
   return (
     <>
-      <ModuleHeader eyebrow="GESTION SCOLAIRE" title="Élèves" action="Nouvel élève" onAction={() => onAction("Ajouter un nouvel élève")} />
+      <ModuleHeader eyebrow="GESTION SCOLAIRE" title="Élèves" action="Nouvel élève" onAction={() => setShowForm(true)} />
       <section className="module-summary-strip">
-        <div><span>1 284</span><p>élèves actifs</p></div><div><span>96 %</span><p>dossiers complets</p></div><div><span>18</span><p>inscriptions à valider</p></div>
+        <div><span>{students.length}</span><p>élèves enregistrés</p></div><div><span>{students.filter((student) => student.status === "active").length}</span><p>dossiers actifs</p></div><div><span>0</span><p>inscriptions à valider</p></div>
         <button className="soft-button" onClick={() => onAction("Importer un fichier d’élèves")}>Importer CSV / Excel <ArrowUpRight size={16} /></button>
       </section>
+      {showForm && <section className="student-create-panel"><div><p className="eyebrow">NOUVEAU DOSSIER</p><h2>Ajouter un élève</h2><p>Le matricule sera généré automatiquement pour votre établissement.</p></div><form onSubmit={createStudent}><label>Prénom<input value={firstName} onChange={(event) => setFirstName(event.target.value)} required placeholder="Ex. Aïssatou" /></label><label>Nom<input value={lastName} onChange={(event) => setLastName(event.target.value)} required placeholder="Ex. Ndiaye" /></label><label className="student-photo-input">Photo <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(event) => setPhotoFile(event.target.files?.[0] ?? null)} /><small>{photoFile ? photoFile.name : "Optionnel · PNG, JPEG ou WebP"}</small></label><div className="student-form-actions"><button type="button" className="outline-button" onClick={() => setShowForm(false)}>Annuler</button><button className="primary-button" disabled={saving}>{saving ? "Ajout…" : "Créer l’élève"} <ArrowRight size={16} /></button></div></form></section>}
       <section className="panel data-panel">
         <div className="data-toolbar"><div className="search-field"><Search size={18} /><input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Rechercher un élève ou un matricule" /></div><button className="filter-button" onClick={() => onAction("Ouvrir les filtres")}><Settings size={16} /> Filtres</button></div>
         <div className="student-table" role="table">
           <div className="table-head" role="row"><span>ÉLÈVE</span><span>MATRICULE</span><span>CLASSE</span><span>STATUT</span><span /></div>
-          {visibleStudents.map((student) => <div className="table-row" role="row" key={student.id}><div className="student-cell">{student.avatar ? <img src={student.avatar} alt="" /> : <InitialAvatar initials={student.initials ?? ""} />}<strong>{student.name}</strong></div><span className="id-code">{student.id}</span><span>{student.className}</span><span className={`status-chip ${student.status === "À jour" ? "status-chip--good" : "status-chip--watch"}`}>{student.status}</span><button aria-label={`Voir ${student.name}`} onClick={() => onAction(`Ouvrir la fiche de ${student.name}`)}><ChevronRight size={19} /></button></div>)}
-          {!visibleStudents.length && <div className="empty-search">Aucun élève ne correspond à votre recherche.</div>}
+          {visibleStudents.map((student) => { const name = `${student.first_name} ${student.last_name}`; return <div className="table-row" role="row" key={student.id}><div className="student-cell">{student.photo_url ? <img src={student.photo_url} alt="" /> : <InitialAvatar initials={`${student.first_name[0] ?? ""}${student.last_name[0] ?? ""}`} />}<strong>{name}</strong></div><span className="id-code">{student.student_number}</span><span>—</span><span className={`status-chip ${student.status === "active" ? "status-chip--good" : "status-chip--watch"}`}>{student.status === "active" ? "Actif" : student.status}</span><button aria-label={`Voir ${name}`} onClick={() => onAction(`Ouvrir la fiche de ${name}`)}><ChevronRight size={19} /></button></div>; })}
+          {!visibleStudents.length && <div className="empty-search">{loading ? "Chargement des élèves…" : query ? "Aucun élève ne correspond à votre recherche." : <><strong>Votre liste est prête à accueillir son premier élève.</strong><button className="text-button" onClick={() => setShowForm(true)}>Créer le premier dossier <ChevronRight size={16} /></button></>}</div>}
         </div>
       </section>
     </>
@@ -249,22 +267,29 @@ function GenericModule({ title, eyebrow, icon: Icon, onAction }: { title: string
 }
 
 export default function Home() {
+  const [, setLocation] = useLocation();
   const [activeNav, setActiveNav] = useState("Vue d’ensemble");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [schoolName, setSchoolName] = useState("Mon établissement");
+  const [schoolId, setSchoolId] = useState("");
+  const [userName, setUserName] = useState("Mon compte");
+  const [loadingAccess, setLoadingAccess] = useState(true);
+  useEffect(() => { void (async () => { const { data: { user } } = await supabase.auth.getUser(); if (!user) { setLocation("/connexion"); return; } setUserName(String(user.user_metadata.full_name ?? user.email?.split("@")[0] ?? "Mon compte")); const { data: schools } = await supabase.from("schools").select("id, name, city, country").limit(1); if (!schools?.length) { setLocation("/demarrer"); return; } setSchoolName(schools[0].name); setSchoolId(schools[0].id); setLoadingAccess(false); })(); }, [setLocation]);
   const onAction = (name: string) => toast.success(name, { description: "Aperçu interactif : cette action ouvrirait le flux correspondant." });
   const moduleMap: Record<string, { eyebrow: string; icon: typeof CalendarDays }> = { Pédagogie: { eyebrow: "GESTION SCOLAIRE", icon: BookOpenCheck }, "Vie scolaire": { eyebrow: "GESTION SCOLAIRE", icon: UserCheck }, Finances: { eyebrow: "ADMINISTRATION", icon: WalletCards }, Documents: { eyebrow: "ADMINISTRATION", icon: FileText }, Calendrier: { eyebrow: "ADMINISTRATION", icon: CalendarDays } };
-  const renderContent = () => { if (activeNav === "Vue d’ensemble") return <Dashboard onAction={onAction} />; if (activeNav === "Élèves") return <StudentsPage onAction={onAction} />; if (activeNav === "Classes") return <ClassesPage onAction={onAction} />; const module = moduleMap[activeNav] ?? moduleMap.Pédagogie; return <GenericModule title={activeNav} eyebrow={module.eyebrow} icon={module.icon} onAction={onAction} />; };
+  const renderContent = () => { if (activeNav === "Vue d’ensemble") return <Dashboard onAction={onAction} />; if (activeNav === "Élèves") return <StudentsPage schoolId={schoolId} onAction={onAction} />; if (activeNav === "Classes") return <ClassesPage onAction={onAction} />; const module = moduleMap[activeNav] ?? moduleMap.Pédagogie; return <GenericModule title={activeNav} eyebrow={module.eyebrow} icon={module.icon} onAction={onAction} />; };
+  if (loadingAccess) return <div className="dashboard-loading"><GraduationCap size={25} /><span>Ouverture de votre espace Schooly…</span></div>;
   return (
     <div className="schooly-app">
       <aside className={`sidebar ${mobileOpen ? "sidebar--open" : ""}`}>
         <div className="sidebar-top"><div className="brand"><img src="/manus-storage/schooly-s-mark_1ed993f5.png" alt="Logo Schooly" /><span>schooly</span></div><button className="mobile-close" onClick={() => setMobileOpen(false)} aria-label="Fermer le menu"><X size={20} /></button></div>
-        <div className="school-switcher"><span className="school-mark">H</span><div><strong>École Horizon</strong><small>Dakar, Sénégal</small></div><ChevronDown size={16} /></div>
+        <div className="school-switcher"><span className="school-mark">{schoolName.charAt(0).toUpperCase()}</span><div><strong>{schoolName}</strong><small>Votre espace Schooly</small></div><ChevronDown size={16} /></div>
         <nav aria-label="Navigation principale">{navGroups.map((group, index) => <div className="nav-group" key={group.label ?? index}>{group.label && <p>{group.label}</p>}{group.items.map((item) => { const Icon = item.icon; const isActive = activeNav === item.label; return <button key={item.label} className={isActive ? "nav-item nav-item--active" : "nav-item"} onClick={() => { setActiveNav(item.label); setMobileOpen(false); }}><Icon size={18} /><span>{item.label}</span>{item.badge && <b>{item.badge}</b>}</button>; })}</div>)}</nav>
-        <div className="sidebar-bottom"><button className="support-card" onClick={() => onAction("Ouvrir le centre d’aide")}><span><CircleHelp size={17} /></span><div><strong>Besoin d’aide ?</strong><small>Consulter le guide Schooly</small></div><ArrowUpRight size={15} /></button><div className="profile-row"><img src="/manus-storage/schooly-avatar-a_34bb0414.png" alt="" /><div><strong>Aminata Seck</strong><small>Directrice</small></div><button aria-label="Ouvrir les réglages" onClick={() => onAction("Ouvrir les réglages")}><Settings size={17} /></button></div></div>
+        <div className="sidebar-bottom"><button className="support-card" onClick={() => onAction("Ouvrir le centre d’aide")}><span><CircleHelp size={17} /></span><div><strong>Besoin d’aide ?</strong><small>Consulter le guide Schooly</small></div><ArrowUpRight size={15} /></button><div className="profile-row"><img src="/manus-storage/schooly-avatar-a_34bb0414.png" alt="" /><div><strong>{userName}</strong><small>Propriétaire</small></div><button aria-label="Se déconnecter" onClick={() => { void supabase.auth.signOut(); setLocation("/"); }}><Settings size={17} /></button></div></div>
       </aside>
       {mobileOpen && <button className="sidebar-backdrop" aria-label="Fermer le menu" onClick={() => setMobileOpen(false)} />}
-      <main className="main-area"><header className="topbar"><button className="mobile-menu" aria-label="Ouvrir le menu" onClick={() => setMobileOpen(true)}><Menu size={21} /></button><div className="breadcrumb"><span>École Horizon</span><ChevronRight size={14} /><strong>{activeNav}</strong></div><div className="top-actions"><button className="search-shortcut" onClick={() => onAction("Rechercher dans Schooly")}><Search size={17} /><span>Rechercher</span><kbd>⌘ K</kbd></button><div className="notification-wrap"><button className="notification-button" aria-label="Notifications" onClick={() => setNotificationsOpen((value) => !value)}><Bell size={19} /><i /></button>{notificationsOpen && <div className="notification-popover"><p className="eyebrow">NOTIFICATIONS</p><strong>3 éléments à suivre</strong><span>Retards signalés et échéances à consulter.</span><button onClick={() => { setNotificationsOpen(false); onAction("Afficher les notifications"); }}>Voir les notifications</button></div>}</div></div></header><div className="content-wrap">{renderContent()}</div></main>
+      <main className="main-area"><header className="topbar"><button className="mobile-menu" aria-label="Ouvrir le menu" onClick={() => setMobileOpen(true)}><Menu size={21} /></button><div className="breadcrumb"><span>{schoolName}</span><ChevronRight size={14} /><strong>{activeNav}</strong></div><div className="top-actions"><button className="search-shortcut" onClick={() => onAction("Rechercher dans Schooly")}><Search size={17} /><span>Rechercher</span><kbd>⌘ K</kbd></button><div className="notification-wrap"><button className="notification-button" aria-label="Notifications" onClick={() => setNotificationsOpen((value) => !value)}><Bell size={19} /><i /></button>{notificationsOpen && <div className="notification-popover"><p className="eyebrow">NOTIFICATIONS</p><strong>3 éléments à suivre</strong><span>Retards signalés et échéances à consulter.</span><button onClick={() => { setNotificationsOpen(false); onAction("Afficher les notifications"); }}>Voir les notifications</button></div>}</div></div></header><div className="content-wrap">{renderContent()}</div></main>
     </div>
   );
 }
