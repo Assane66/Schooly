@@ -31,7 +31,7 @@ export default function Supervision() {
     if (!error) setSchools((data ?? []) as ManagedSchool[]);
   };
 
-  useEffect(() => { void (async () => { const { data: { user } } = await supabase.auth.getUser(); if (!user) { setLocation("/connexion"); return; } const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", user.id).eq("status", "active").maybeSingle(); if (!admin) { setStatus("forbidden"); return; } await loadSchools(); setStatus("ready"); })(); }, [setLocation]);
+  useEffect(() => { void (async () => { const { data: { user } } = await supabase.auth.getUser(); if (!user) { setLocation("/connexion?role=platform"); return; } const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", user.id).eq("status", "active").maybeSingle(); if (!admin) { setStatus("forbidden"); return; } await loadSchools(); setStatus("ready"); })(); }, [setLocation]);
 
   const filtered = useMemo(() => filter === "all" ? schools : schools.filter((school) => school.approval_status === filter), [filter, schools]);
   const decide = async (schoolId: string, decision: "approved" | "rejected" | "suspended") => { setProcessing(schoolId); const { error } = await supabase.rpc("approve_school", { p_school_id: schoolId, p_decision: decision, p_reason: decision === "rejected" ? reason : null }); setProcessing(null); if (error) return; setReason(""); await loadSchools(); };

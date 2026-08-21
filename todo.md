@@ -24,3 +24,6 @@
 - [ ] Attribuer le rôle super-administrateur à l’adresse e-mail fournie par le propriétaire.
 - [ ] Vérifier les parcours d’inscription, approbation, refus et accès administrateur global.
 - [x] Révoquer l’exécution publique des fonctions Supabase internes de gouvernance.
+- [x] Créer une entrée de connexion super-administrateur explicitement séparée du parcours établissement.
+- [x] Distinguer visuellement le portail de supervision du tableau de bord directeur.
+- [x] Afficher au propriétaire un guide clair d’activation de son accès super-administrateur.

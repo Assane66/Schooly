@@ -64,9 +64,11 @@ export default function Landing() {
           <button onClick={goToProduct}>Produit</button>
           <button onClick={() => document.getElementById("securite")?.scrollIntoView({ behavior: "smooth" })}>Sécurité</button>
           <button onClick={() => document.getElementById("demarrer")?.scrollIntoView({ behavior: "smooth" })}>Pour les établissements</button>
+          <button onClick={() => setLocation("/administration")}>Plateforme</button>
           <button className="mobile-workspace-link" onClick={launchWorkspace}>Mon espace <ArrowRight size={15} /></button>
         </nav>
         <div className="landing-nav-actions">
+          <button className="landing-login platform-link" onClick={() => setLocation("/administration")}>Administration</button>
           <button className="landing-login" onClick={launchWorkspace} disabled={loading}>{isAuthenticated ? "Mon espace" : "Se connecter"}</button>
           <button className="landing-cta landing-cta--compact" onClick={launchWorkspace} disabled={loading}>Créer mon espace <ArrowRight size={15} /></button>
         </div>
