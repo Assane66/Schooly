@@ -5,12 +5,15 @@
 - [x] Définir les tables multi-écoles, les rôles et les politiques de cloisonnement des données.
 - [x] Créer la page d’accueil publique et les parcours d’inscription / connexion.
 - [x] Créer le parcours authentifié de création de l’établissement et de son espace propriétaire.
-- [ ] Relier les espaces produit aux utilisateurs et données Supabase.
+- [x] Relier les espaces produit aux utilisateurs et données Supabase.
+- [x] Relier la gestion des classes et années scolaires à Supabase après création de l’établissement.
+- [x] Ajouter les données métier Supabase pour présence, pédagogie, finances, documents et calendrier.
+- [x] Remplacer les indicateurs de démonstration restants du tableau de bord par des états vides ou des données réelles.
 - [x] Relier la liste et la création d’élèves à l’établissement connecté dans Supabase.
 - [x] Restreindre l’exécution publique de la fonction de contrôle d’appartenance Supabase.
 - [x] Normaliser la configuration d’exécution Supabase et valider l’accès API avec la clé publique récupérée.
 - [x] Finaliser la liaison de la clé publishable Supabase fournie et exécuter le test de connectivité.
 - [x] Préparer le stockage et l’affichage des images via Cloudinary.
 - [x] Ajouter un upload Cloudinary signé pour les photos d’élèves et enregistrer les métadonnées dans Supabase.
-- [ ] Vérifier les parcours de création d’école, connexion et tableau de bord.
+- [ ] Vérifier les parcours de création d’école, connexion et tableau de bord avec une session Supabase réelle.
 - [x] Documenter la configuration et préparer l’export du dépôt vers GitHub.
