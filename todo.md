@@ -17,3 +17,10 @@
 - [x] Ajouter un upload Cloudinary signé pour les photos d’élèves et enregistrer les métadonnées dans Supabase.
 - [ ] Vérifier les parcours de création d’école, connexion et tableau de bord avec une session Supabase réelle.
 - [x] Documenter la configuration et préparer l’export du dépôt vers GitHub.
+- [ ] Auditer le code historique distinct à fusionner dès qu’il est disponible dans GitHub.
+- [ ] Fusionner les fonctions compatibles du code historique fourni avec l’architecture Schooly connectée.
+- [x] Ajouter un statut d’approbation aux établissements et limiter l’accès des écoles non validées.
+- [x] Créer le rôle global super-administrateur et son espace de supervision multi-écoles.
+- [ ] Attribuer le rôle super-administrateur à l’adresse e-mail fournie par le propriétaire.
+- [ ] Vérifier les parcours d’inscription, approbation, refus et accès administrateur global.
+- [x] Révoquer l’exécution publique des fonctions Supabase internes de gouvernance.

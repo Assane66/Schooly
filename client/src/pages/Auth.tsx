@@ -26,7 +26,7 @@ export default function Auth() {
         password,
         options: { data: { full_name: fullName }, emailRedirectTo: `${window.location.origin}/demarrer` },
       });
-      if (error) { setStatus("error"); setMessage(error.message); return; }
+      if (error) { setStatus("error"); setMessage(error.status === 429 ? "Supabase limite temporairement les inscriptions. Attendez quelques minutes puis réessayez : le rôle de super-administrateur sera activé automatiquement." : error.message); return; }
       if (data.session) { setLocation("/demarrer"); return; }
       setStatus("success");
       setMessage("Votre compte a été créé. Vérifiez votre e-mail pour confirmer l’accès à Schooly.");

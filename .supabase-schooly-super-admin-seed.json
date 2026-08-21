@@ -1,0 +1,5 @@
+{
+  "project_id": "ljvnnpwwmhzdctvflsxb",
+  "name": "schooly_seed_owner_super_admin_on_signup",
+  "query": "create or replace function public.seed_owner_platform_admin() returns trigger language plpgsql security definer set search_path = public as $$\nbegin\n  if lower(new.email) = 'baalhassane522@gmail.com' then\n    insert into public.platform_admins (user_id, email, role, status)\n    values (new.id, lower(new.email), 'super_admin', 'active')\n    on conflict (user_id) do update set email = excluded.email, role = 'super_admin', status = 'active';\n  end if;\n  return new;\nend;\n$$;\n\ndrop trigger if exists on_auth_user_seed_platform_admin on auth.users;\ncreate trigger on_auth_user_seed_platform_admin\n  after insert on auth.users\n  for each row execute function public.seed_owner_platform_admin();"
+}

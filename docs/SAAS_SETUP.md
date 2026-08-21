@@ -26,6 +26,14 @@ Le schéma public contient les tables `profiles`, `schools`, `school_memberships
 
 Les rôles prévus sont `owner`, `director`, `administrator`, `secretary`, `accountant`, `teacher`, `supervisor`, `parent` et `student`. Les politiques RLS se fondent sur la fonction `is_school_member` pour autoriser uniquement les membres de l’établissement concerné.
 
+## Gouvernance de plateforme
+
+Chaque nouvel établissement est créé avec le statut `pending`. Tant qu’un super-administrateur ne l’a pas approuvé, son propriétaire voit un écran d’attente et les tables métier restent inaccessibles. Le super-administrateur peut approuver, refuser avec motif ou suspendre une école depuis `/supervision`.
+
+L’adresse e-mail du propriétaire désignée dans la migration de gouvernance est promue automatiquement en `super_admin` lors de sa première inscription. Ce mécanisme est exécuté côté base de données : aucun droit d’administration de plateforme n’est délivré par le navigateur.
+
+Les fonctions internes de contrôle RLS ont été déplacées vers le schéma privé `schooly_private`, hors de l’API REST publique. Les deux procédures publiques restantes sont intentionnelles : `create_school_with_owner` crée l’école de l’utilisateur connecté et `approve_school` vérifie le rôle de plateforme avant toute décision.
+
 ## Médias Cloudinary
 
 Les photos d’élèves sont envoyées directement vers Cloudinary avec une signature à durée courte délivrée par le serveur Schooly. L’API Cloudinary secrète n’est jamais exposée au navigateur. Après transfert, l’URL de livraison et le `public_id` sont enregistrés dans `students` et `media_assets`.
@@ -60,3 +68,4 @@ Les tests couvrent le logout du socle full-stack, l’accès à la configuration
 2. Créer un établissement depuis `/demarrer`.
 3. Accéder à `Élèves`, créer un premier dossier et, si souhaité, joindre une photo.
 4. Contrôler dans Supabase que l’école, l’appartenance, l’élève et le média sont bien isolés par `school_id`.
+5. Se connecter avec le compte super-administrateur, ouvrir `/supervision`, approuver l’école créée puis confirmer que son propriétaire accède à `/app`.

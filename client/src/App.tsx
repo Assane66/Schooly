@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import Onboarding from "./pages/Onboarding";
+import Supervision from "./pages/Supervision";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -16,6 +17,7 @@ function Router() {
       <Route path={"/"} component={Landing} />
       <Route path={"/connexion"} component={Auth} />
       <Route path={"/demarrer"} component={Onboarding} />
+      <Route path={"/supervision"} component={Supervision} />
       <Route path={"/app"} component={Home} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}

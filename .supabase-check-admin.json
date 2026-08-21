@@ -1,0 +1,4 @@
+{
+  "project_id": "ljvnnpwwmhzdctvflsxb",
+  "query": "select id, email, email_confirmed_at from auth.users where email = 'baalhassane522@gmail.com' limit 1;"
+}

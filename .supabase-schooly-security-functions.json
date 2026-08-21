@@ -1,0 +1,5 @@
+{
+  "project_id": "ljvnnpwwmhzdctvflsxb",
+  "name": "schooly_revoke_internal_function_execution",
+  "query": "revoke all on function public.seed_owner_platform_admin() from public, anon, authenticated;\nrevoke all on function public.rls_auto_enable() from public, anon, authenticated;"
+}

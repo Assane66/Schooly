@@ -12,6 +12,7 @@ import {
   ChevronDown,
   ChevronRight,
   CircleHelp,
+  Clock3,
   CreditCard,
   FileText,
   GraduationCap,
@@ -27,6 +28,7 @@ import {
   UsersRound,
   WalletCards,
   X,
+  XCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/lib/supabase";
@@ -334,15 +336,20 @@ export default function Home() {
   const [schoolId, setSchoolId] = useState("");
   const [studentCount, setStudentCount] = useState(0);
   const [dashboardStats, setDashboardStats] = useState<DashboardStats>({ attendance: 0, payments: 0, upcomingEvents: 0 });
+  const [approvalStatus, setApprovalStatus] = useState<"pending" | "approved" | "rejected" | "suspended">("approved");
+  const [rejectionReason, setRejectionReason] = useState<string | null>(null);
+  const [isPlatformAdmin, setIsPlatformAdmin] = useState(false);
   const [userName, setUserName] = useState("Mon compte");
   const [loadingAccess, setLoadingAccess] = useState(true);
-  useEffect(() => { void (async () => { const { data: { user } } = await supabase.auth.getUser(); if (!user) { setLocation("/connexion"); return; } setUserName(String(user.user_metadata.full_name ?? user.email?.split("@")[0] ?? "Mon compte")); const { data: schools } = await supabase.from("schools").select("id, name, city, country").limit(1); if (!schools?.length) { setLocation("/demarrer"); return; } setSchoolName(schools[0].name); setSchoolId(schools[0].id); setLoadingAccess(false); })(); }, [setLocation]);
+  useEffect(() => { void (async () => { const { data: { user } } = await supabase.auth.getUser(); if (!user) { setLocation("/connexion"); return; } setUserName(String(user.user_metadata.full_name ?? user.email?.split("@")[0] ?? "Mon compte")); const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", user.id).eq("status", "active").maybeSingle(); setIsPlatformAdmin(Boolean(admin)); const { data: schools } = await supabase.from("schools").select("id, name, city, country, approval_status, rejection_reason").limit(1); if (!schools?.length) { setLoadingAccess(false); return; } setSchoolName(schools[0].name); setSchoolId(schools[0].id); setApprovalStatus(schools[0].approval_status as "pending" | "approved" | "rejected" | "suspended"); setRejectionReason(schools[0].rejection_reason); setLoadingAccess(false); })(); }, [setLocation]);
   useEffect(() => { if (!schoolId) return; void (async () => { const { count } = await supabase.from("students").select("id", { count: "exact", head: true }).eq("school_id", schoolId); setStudentCount(count ?? 0); })(); }, [schoolId]);
   useEffect(() => { if (!schoolId) return; void (async () => { const today = new Date(); const day = today.toISOString().slice(0, 10); const monthStart = `${day.slice(0, 7)}-01`; const [{ count: attendance }, { count: payments }, { count: upcomingEvents }] = await Promise.all([supabase.from("attendance_records").select("id", { count: "exact", head: true }).eq("school_id", schoolId).eq("attendance_date", day), supabase.from("payments").select("id", { count: "exact", head: true }).eq("school_id", schoolId).gte("payment_date", monthStart), supabase.from("calendar_events").select("id", { count: "exact", head: true }).eq("school_id", schoolId).gte("starts_at", today.toISOString())]); setDashboardStats({ attendance: attendance ?? 0, payments: payments ?? 0, upcomingEvents: upcomingEvents ?? 0 }); })(); }, [schoolId]);
   const onAction = (name: string) => toast.success(name, { description: "Aperçu interactif : cette action ouvrirait le flux correspondant." });
   const moduleMap: Record<string, { eyebrow: string; icon: typeof CalendarDays }> = { Pédagogie: { eyebrow: "GESTION SCOLAIRE", icon: BookOpenCheck }, "Vie scolaire": { eyebrow: "GESTION SCOLAIRE", icon: UserCheck }, Finances: { eyebrow: "ADMINISTRATION", icon: WalletCards }, Documents: { eyebrow: "ADMINISTRATION", icon: FileText }, Calendrier: { eyebrow: "ADMINISTRATION", icon: CalendarDays } };
   const renderContent = () => { if (activeNav === "Vue d’ensemble") return <Dashboard schoolId={schoolId} schoolName={schoolName} studentCount={studentCount} stats={dashboardStats} onAction={onAction} />; if (activeNav === "Élèves") return <StudentsPage schoolId={schoolId} onAction={onAction} />; if (activeNav === "Classes") return <ClassesPage schoolId={schoolId} onAction={onAction} />; const module = moduleMap[activeNav] ?? moduleMap.Pédagogie; return <GenericModule schoolId={schoolId} title={activeNav} eyebrow={module.eyebrow} icon={module.icon} onAction={onAction} />; };
   if (loadingAccess) return <div className="dashboard-loading"><GraduationCap size={25} /><span>Ouverture de votre espace Schooly…</span></div>;
+  if (isPlatformAdmin && !schoolId) return <div className="supervision-guard"><ShieldCheck size={31} /><h1>Super-administrateur Schooly</h1><p>Votre compte peut superviser toutes les demandes et décider de l’activation des établissements.</p><button className="primary-button" onClick={() => setLocation("/supervision")}>Ouvrir la supervision</button></div>;
+  if (approvalStatus !== "approved") return <div className="approval-pending-page"><div className="approval-pending-card"><span className={`approval-pending-icon approval-pending-icon--${approvalStatus}`}>{approvalStatus === "pending" ? <Clock3 size={28} /> : <XCircle size={28} />}</span><p className="landing-eyebrow">{approvalStatus === "pending" ? "DEMANDE EN COURS D’EXAMEN" : approvalStatus === "rejected" ? "DEMANDE REFUSÉE" : "ÉTABLISSEMENT SUSPENDU"}</p><h1>{approvalStatus === "pending" ? "Votre établissement attend votre validation." : "Votre espace n’est pas actif."}</h1><p>{approvalStatus === "pending" ? "L’équipe Schooly vérifiera votre demande avant d’activer l’accès aux modules de gestion." : rejectionReason ? `Motif indiqué : ${rejectionReason}` : "Contactez la supervision Schooly pour connaître les prochaines étapes."}</p><button className="outline-button" onClick={() => { void supabase.auth.signOut(); setLocation("/"); }}>Se déconnecter</button></div></div>;
   return (
     <div className="schooly-app">
       <aside className={`sidebar ${mobileOpen ? "sidebar--open" : ""}`}>
