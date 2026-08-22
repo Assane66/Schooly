@@ -86,3 +86,9 @@
 - [x] Diagnostiquer la non-réception des e-mails de confirmation Supabase lors des inscriptions directeur.
 - [ ] Rétablir un envoi de confirmation fiable et valider la réception avec une nouvelle inscription directeur.
 - [x] Ajouter un renvoi explicite du lien de confirmation dans le parcours d’inscription directeur.
+- [x] Remplacer l’inscription courte par une étape dédiée aux informations personnelles du directeur.
+- [x] Ajouter une étape séparée pour les coordonnées et l’identité de l’établissement.
+- [x] Proposer les cycles élémentaire, collège et lycée sans possibilité universitaire dans l’inscription.
+- [x] Générer des classes initiales modifiables selon les cycles sélectionnés avant la finalisation.
+- [ ] Demander le mot de passe à la dernière étape, puis créer le compte et l’établissement avant la confirmation e-mail.
+- [ ] Enregistrer les coordonnées professionnelles fournies lors de l’inscription dans les données de l’établissement.
