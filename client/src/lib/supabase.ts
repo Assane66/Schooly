@@ -20,3 +20,14 @@ export async function hasPlatformAdminRole() {
   if (!error && data === true) return true;
   return user.email?.trim().toLowerCase() === OWNER_PLATFORM_EMAIL;
 }
+
+/** Enregistre une action métier sans interrompre le parcours utilisateur si le journal n’est pas encore activé. */
+export async function recordSchoolyActivity(input: { schoolId?: string | null; action: string; summary: string; metadata?: Record<string, unknown> }) {
+  const { error } = await supabase.rpc("log_schooly_activity", {
+    p_school_id: input.schoolId ?? null,
+    p_action: input.action,
+    p_summary: input.summary,
+    p_metadata: input.metadata ?? {},
+  });
+  if (error) console.warn("Journal d’activité Schooly indisponible", error.message);
+}
