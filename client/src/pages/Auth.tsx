@@ -1,7 +1,7 @@
 /** Parcours d’identité Schooly — connexion, création et récupération sécurisée via Supabase Auth. */
 import { hasPlatformAdminRole, supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, School, X } from "lucide-react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 
 type AuthMode = "login" | "signup" | "forgot" | "reset";
@@ -11,9 +11,9 @@ export default function Auth() {
   const searchParams = new URLSearchParams(window.location.search);
   const isPlatformEntry = searchParams.get("role") === "platform";
   const resetEntry = searchParams.get("mode") === "reset";
-  const authenticatedDestination = isPlatformEntry ? "/supervision" : "/app";
-  const confirmationDestination = isPlatformEntry ? "/supervision" : "/demarrer";
-  const [mode, setMode] = useState<AuthMode>(resetEntry ? "reset" : isPlatformEntry ? "login" : "signup");
+  const confirmationEntry = searchParams.get("mode") === "confirm";
+  const confirmationDestination = isPlatformEntry ? "/supervision" : "/connexion?mode=confirm";
+  const [mode, setMode] = useState<AuthMode>(resetEntry ? "reset" : isPlatformEntry || confirmationEntry ? "login" : "signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
@@ -21,6 +21,12 @@ export default function Auth() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [message, setMessage] = useState("");
 
+  const resolveDestination = async (userId: string) => {
+    if (isPlatformEntry) return "/supervision";
+    const { data: memberships } = await supabase.from("school_memberships").select("role").eq("user_id", userId).limit(1);
+    return memberships?.some((membership) => membership.role === "student" || membership.role === "parent") ? "/famille" : "/app";
+  };
+  useEffect(() => { if (!confirmationEntry) return; void (async () => { setStatus("loading"); const { data: { user } } = await supabase.auth.getUser(); if (!user) { setStatus("error"); setMessage("La confirmation est terminée. Connectez-vous maintenant avec votre adresse et votre mot de passe."); return; } setLocation(await resolveDestination(user.id)); })(); }, [confirmationEntry, setLocation]);
   const switchMode = (nextMode: AuthMode) => { setMode(nextMode); setStatus("idle"); setMessage(""); };
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -39,13 +45,13 @@ export default function Auth() {
     if (mode === "signup") {
       const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: fullName }, emailRedirectTo: `${window.location.origin}${confirmationDestination}` } });
       if (error) { setStatus("error"); setMessage(error.status === 429 ? "Supabase limite temporairement les inscriptions. Attendez quelques minutes puis réessayez." : error.message); return; }
-      if (data.session) { setLocation(authenticatedDestination); return; }
+      if (data.session) { setLocation(await resolveDestination(data.session.user.id)); return; }
       setStatus("success"); setMessage("Votre compte a été créé. Vérifiez votre e-mail pour confirmer l’accès à Schooly."); return;
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setStatus("error"); setMessage(error.message); return; }
     if (isPlatformEntry && !await hasPlatformAdminRole()) { await supabase.auth.signOut(); setStatus("error"); setMessage("Ce compte ne dispose pas de l’accès super-administrateur Schooly."); return; }
-    setLocation(authenticatedDestination);
+    setLocation(await resolveDestination(data.user.id));
   };
   const title = mode === "forgot" ? "Retrouver votre accès." : mode === "reset" ? "Choisissez un nouveau mot de passe." : isPlatformEntry ? "Supervision sécurisée." : mode === "signup" ? "Commençons simplement." : "Ravi de vous revoir.";
   const description = mode === "forgot" ? "Nous vous enverrons un lien sécurisé si cette adresse est reconnue." : mode === "reset" ? "Utilisez au minimum huit caractères que vous n’employez pas ailleurs." : isPlatformEntry ? "Connectez-vous avec l’adresse e-mail propriétaire de la plateforme." : mode === "signup" ? "Quelques informations suffisent pour préparer l’espace de votre établissement." : "Connectez-vous pour retrouver votre établissement.";
