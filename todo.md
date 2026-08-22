@@ -61,6 +61,7 @@
 - [ ] Afficher l’historique des avertissements, pauses et reprises d’école dans la supervision.
 - [ ] Tester visuellement le flux avertissement → pause → reprise → retour à l’espace école avec données conservées.
 - [ ] Créer des comptes individuels et sécurisés pour professeurs, élèves et accès famille.
+- [ ] Ajouter la demande et la finalisation sécurisées de réinitialisation de mot de passe.
 - [ ] Adapter la navigation et les modules visibles aux permissions des membres invités de chaque école.
 - [ ] Ajouter les affectations professeur-matière-classe, les notes, bulletins et relevés pédagogiques.
 - [ ] Ajouter les reçus, échéanciers, impayés et rappels de paiement configurables par école.
