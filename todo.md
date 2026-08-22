@@ -33,10 +33,10 @@
 - [ ] Vérifier et publier la version fusionnée sur GitHub et Schooly.
 - [ ] Ajouter la préinscription publique par code établissement, adaptée du code GitHub et enregistrée dans Supabase.
 - [ ] Ajouter la liste et le traitement des demandes de préinscription dans l’espace établissement.
-- [ ] Simplifier la page d’accueil en une entrée claire vers les espaces établissement et plateforme.
+- [x] Simplifier la page d’accueil en une entrée claire vers les espaces établissement et plateforme.
 - [ ] Réserver le parcours `/administration` au super-administrateur sans possibilité d’auto-création par les autres rôles.
-- [ ] Adapter l’onboarding directeur avec des niveaux suggérés : primaire, collège et lycée, puis création libre des classes.
-- [ ] Ajouter les séries lycée (S, L et variantes) dans le parcours de création de classes.
+- [x] Adapter l’onboarding directeur avec des niveaux suggérés : primaire, collège et lycée, puis création libre des classes.
+- [x] Ajouter les séries lycée (S, L et variantes) dans le parcours de création de classes.
 - [ ] Définir les comptes, rôles et permissions directeur, professeur et élève sans exposer de mot de passe partagé.
 - [ ] Prévoir l’import et l’export des élèves ainsi que la préinscription autonome par lien/QR code.
 - [ ] Ajouter le statut mensuel payé / impayé par élève et le relevé de paiement associé.
@@ -45,4 +45,6 @@
 - [ ] Ajouter des rôles d’école personnalisables avec permissions enregistrées par directeur.
 - [ ] Créer l’interface directeur de gestion des rôles et des permissions déléguées.
 - [ ] Autoriser la délégation contrôlée des paiements aux rôles comptable, secrétaire ou administratif.
+- [ ] Ajouter l’attribution de rôles aux membres réels de l’établissement et restreindre la page de gestion aux dirigeants.
+- [ ] Vérifier de bout en bout les droits de paiement avec un compte non-propriétaire autorisé et non autorisé.
 - [ ] Prévoir l’accès familial par le compte élève plutôt qu’un portail parent distinct.
