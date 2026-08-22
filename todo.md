@@ -70,7 +70,8 @@
 - [ ] Ajouter la demande et la finalisation sécurisées de réinitialisation de mot de passe.
 - [ ] Adapter la navigation et les modules visibles aux permissions des membres invités de chaque école.
 - [ ] Ajouter les affectations professeur-matière-classe, les notes, bulletins et relevés pédagogiques.
-- [ ] Restreindre en base l’écriture des matières, évaluations et notes aux rôles pédagogiques autorisés.
+- [ ] Ajouter une feuille de présence quotidienne par élève avec statuts présent, absent, retard et excusé.
+- [x] Restreindre en base l’écriture des matières, évaluations et notes aux rôles pédagogiques autorisés.
 - [ ] Ajouter un relevé individuel imprimable des évaluations et notes par élève.
 - [ ] Ajouter les reçus, échéanciers, impayés et rappels de paiement configurables par école.
 - [ ] Ajouter des imports et exports CSV contrôlés pour élèves, classes, paiements et préinscriptions.
