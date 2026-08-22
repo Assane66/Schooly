@@ -48,3 +48,4 @@
 - [ ] Ajouter l’attribution de rôles aux membres réels de l’établissement et restreindre la page de gestion aux dirigeants.
 - [ ] Vérifier de bout en bout les droits de paiement avec un compte non-propriétaire autorisé et non autorisé.
 - [ ] Prévoir l’accès familial par le compte élève plutôt qu’un portail parent distinct.
+- [ ] Vérifier techniquement la protection Supabase contre les mots de passe divulgués après l’activation confirmée.
