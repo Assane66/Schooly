@@ -24,6 +24,7 @@
 - [ ] Attribuer le rôle super-administrateur à l’adresse e-mail fournie par le propriétaire.
 - [ ] Corriger l’association du compte propriétaire confirmé au rôle super-administrateur et valider son accès à la supervision.
 - [ ] Rediriger clairement le super-administrateur vers sa supervision et afficher des actions de changement d’espace et déconnexion.
+- [x] Ajouter un bouton texte « Se déconnecter » visible dans l’espace établissement et la supervision.
 - [ ] Vérifier les parcours d’inscription, approbation, refus et accès administrateur global.
 - [x] Révoquer l’exécution publique des fonctions Supabase internes de gouvernance.
 - [x] Créer une entrée de connexion super-administrateur explicitement séparée du parcours établissement.
