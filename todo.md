@@ -59,6 +59,8 @@
 - [ ] Vérifier de bout en bout les droits de paiement avec un compte non-propriétaire autorisé et non autorisé.
 - [ ] Prévoir l’accès familial par le compte élève plutôt qu’un portail parent distinct.
 - [ ] Vérifier techniquement la protection Supabase contre les mots de passe divulgués après l’activation confirmée.
+- [ ] Produire un audit de préparation au lancement SaaS distinguant les fonctionnalités opérationnelles, à valider et à développer.
+- [ ] Définir le plan de montée en charge multi-écoles : sauvegarde, journalisation, supervision, support et gouvernance des données.
 - [ ] Déployer le cycle de vie complet d’une école : avertissement, pause, reprise, historique et conservation des données.
 - [ ] Afficher l’historique des avertissements, pauses et reprises d’école dans la supervision.
 - [ ] Tester visuellement le flux avertissement → pause → reprise → retour à l’espace école avec données conservées.
