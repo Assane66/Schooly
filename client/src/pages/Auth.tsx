@@ -1,7 +1,7 @@
 /**
  * Parcours d’identité Schooly — connexion et création de compte via Supabase Auth.
  */
-import { supabase } from "@/lib/supabase";
+import { hasPlatformAdminRole, supabase } from "@/lib/supabase";
 import { ArrowRight, CheckCircle2, Eye, EyeOff, LockKeyhole, Mail, School, X } from "lucide-react";
 import { FormEvent, useState } from "react";
 import { useLocation } from "wouter";
@@ -37,10 +37,7 @@ export default function Auth() {
     }
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setStatus("error"); setMessage(error.message); return; }
-    if (isPlatformEntry) {
-      const { data: admin } = await supabase.from("platform_admins").select("user_id").eq("user_id", data.user.id).eq("status", "active").maybeSingle();
-      if (!admin) { await supabase.auth.signOut(); setStatus("error"); setMessage("Ce compte ne dispose pas de l’accès super-administrateur Schooly."); return; }
-    }
+    if (isPlatformEntry && !await hasPlatformAdminRole()) { await supabase.auth.signOut(); setStatus("error"); setMessage("Ce compte ne dispose pas de l’accès super-administrateur Schooly."); return; }
     setLocation(authenticatedDestination);
   };
 
