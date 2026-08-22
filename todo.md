@@ -28,6 +28,9 @@
 - [ ] Rediriger clairement le super-administrateur vers sa supervision et afficher des actions de changement d’espace et déconnexion.
 - [x] Ajouter un bouton texte « Se déconnecter » visible dans l’espace établissement et la supervision.
 - [ ] Vérifier les parcours d’inscription, approbation, refus et accès administrateur global.
+- [x] Permettre au super-administrateur de suspendre et reprendre une école sans supprimer ses données.
+- [ ] Ajouter des avertissements de paiement et leur historique dans l’espace de supervision.
+- [ ] Afficher dans les espaces établissement un état clair lors d’une suspension, avec conservation des données à la reprise.
 - [x] Révoquer l’exécution publique des fonctions Supabase internes de gouvernance.
 - [x] Créer une entrée de connexion super-administrateur explicitement séparée du parcours établissement.
 - [x] Distinguer visuellement le portail de supervision du tableau de bord directeur.
@@ -54,6 +57,14 @@
 - [ ] Vérifier de bout en bout les droits de paiement avec un compte non-propriétaire autorisé et non autorisé.
 - [ ] Prévoir l’accès familial par le compte élève plutôt qu’un portail parent distinct.
 - [ ] Vérifier techniquement la protection Supabase contre les mots de passe divulgués après l’activation confirmée.
+- [ ] Déployer le cycle de vie complet d’une école : avertissement, pause, reprise, historique et conservation des données.
+- [ ] Afficher l’historique des avertissements, pauses et reprises d’école dans la supervision.
+- [ ] Tester visuellement le flux avertissement → pause → reprise → retour à l’espace école avec données conservées.
+- [ ] Créer des comptes individuels et sécurisés pour professeurs, élèves et accès famille.
+- [ ] Ajouter les affectations professeur-matière-classe, les notes, bulletins et relevés pédagogiques.
+- [ ] Ajouter les reçus, échéanciers, impayés et rappels de paiement configurables par école.
+- [ ] Ajouter des imports et exports CSV contrôlés pour élèves, classes, paiements et préinscriptions.
+- [ ] Ajouter communication, journal d’activité, notifications et préparation multilingue/multidevise.
 - [x] Masquer la création de compte sur le parcours plateforme et n’autoriser que la connexion au compte super-administrateur existant.
 - [x] Afficher un relevé mensuel complet par élève dans le module des paiements avec un état d’erreur explicite.
 - [x] Aligner la page de consultation QR avec le format imbriqué renvoyé par la fonction Supabase de vérification.
