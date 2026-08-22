@@ -10,6 +10,7 @@ import Auth from "./pages/Auth";
 import Landing from "./pages/Landing";
 import Onboarding from "./pages/Onboarding";
 import PublicRegistration from "./pages/PublicRegistration";
+import PaymentCardLookup from "./pages/PaymentCardLookup";
 import Supervision from "./pages/Supervision";
 
 function Router() {
@@ -21,6 +22,7 @@ function Router() {
       <Route path={"/connexion"} component={Auth} />
       <Route path={"/demarrer"} component={Onboarding} />
       <Route path={"/inscription/:schoolSlug"} component={PublicRegistration} />
+      <Route path={"/carte/:qrToken"} component={PaymentCardLookup} />
       <Route path={"/supervision"} component={Supervision} />
       <Route path={"/app"} component={Home} />
       <Route path={"/404"} component={NotFound} />

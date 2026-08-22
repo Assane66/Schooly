@@ -31,21 +31,24 @@
 - [x] Comparer le schéma et les parcours GitHub aux données Supabase déjà déployées.
 - [ ] Fusionner les fonctions compatibles du code GitHub sans perdre la gouvernance super-administrateur.
 - [ ] Vérifier et publier la version fusionnée sur GitHub et Schooly.
-- [ ] Ajouter la préinscription publique par code établissement, adaptée du code GitHub et enregistrée dans Supabase.
-- [ ] Ajouter la liste et le traitement des demandes de préinscription dans l’espace établissement.
+- [x] Ajouter la préinscription publique par code établissement, adaptée du code GitHub et enregistrée dans Supabase.
+- [x] Ajouter la liste et le traitement des demandes de préinscription dans l’espace établissement.
 - [x] Simplifier la page d’accueil en une entrée claire vers les espaces établissement et plateforme.
-- [ ] Réserver le parcours `/administration` au super-administrateur sans possibilité d’auto-création par les autres rôles.
+- [x] Réserver le parcours `/administration` au super-administrateur sans possibilité d’auto-création par les autres rôles.
 - [x] Adapter l’onboarding directeur avec des niveaux suggérés : primaire, collège et lycée, puis création libre des classes.
 - [x] Ajouter les séries lycée (S, L et variantes) dans le parcours de création de classes.
 - [ ] Définir les comptes, rôles et permissions directeur, professeur et élève sans exposer de mot de passe partagé.
 - [ ] Prévoir l’import et l’export des élèves ainsi que la préinscription autonome par lien/QR code.
-- [ ] Ajouter le statut mensuel payé / impayé par élève et le relevé de paiement associé.
-- [ ] Générer une carte QR élève permettant la consultation contrôlée de son statut de paiement.
+- [x] Ajouter le statut mensuel payé / impayé par élève et le relevé de paiement associé.
+- [x] Générer une carte QR élève permettant la consultation contrôlée de son statut de paiement.
 - [ ] Limiter la version initiale aux structures primaire, collège et lycée ; reporter les facultés universitaires.
-- [ ] Ajouter des rôles d’école personnalisables avec permissions enregistrées par directeur.
-- [ ] Créer l’interface directeur de gestion des rôles et des permissions déléguées.
-- [ ] Autoriser la délégation contrôlée des paiements aux rôles comptable, secrétaire ou administratif.
-- [ ] Ajouter l’attribution de rôles aux membres réels de l’établissement et restreindre la page de gestion aux dirigeants.
+- [x] Ajouter des rôles d’école personnalisables avec permissions enregistrées par directeur.
+- [x] Créer l’interface directeur de gestion des rôles et des permissions déléguées.
+- [x] Autoriser la délégation contrôlée des paiements aux rôles comptable, secrétaire ou administratif.
+- [x] Ajouter l’attribution de rôles aux membres réels de l’établissement et restreindre la page de gestion aux dirigeants.
 - [ ] Vérifier de bout en bout les droits de paiement avec un compte non-propriétaire autorisé et non autorisé.
 - [ ] Prévoir l’accès familial par le compte élève plutôt qu’un portail parent distinct.
 - [ ] Vérifier techniquement la protection Supabase contre les mots de passe divulgués après l’activation confirmée.
+- [x] Masquer la création de compte sur le parcours plateforme et n’autoriser que la connexion au compte super-administrateur existant.
+- [x] Afficher un relevé mensuel complet par élève dans le module des paiements avec un état d’erreur explicite.
+- [x] Aligner la page de consultation QR avec le format imbriqué renvoyé par la fonction Supabase de vérification.
