@@ -23,6 +23,8 @@
 - [x] Créer le rôle global super-administrateur et son espace de supervision multi-écoles.
 - [ ] Attribuer le rôle super-administrateur à l’adresse e-mail fournie par le propriétaire.
 - [ ] Corriger l’association du compte propriétaire confirmé au rôle super-administrateur et valider son accès à la supervision.
+- [ ] Corriger la vérification Schooly du rôle super-administrateur à partir de la table plateforme confirmée.
+- [ ] Créer une activation propriétaire séparée de la création d’école, réservée à l’adresse super-administrateur.
 - [ ] Rediriger clairement le super-administrateur vers sa supervision et afficher des actions de changement d’espace et déconnexion.
 - [x] Ajouter un bouton texte « Se déconnecter » visible dans l’espace établissement et la supervision.
 - [ ] Vérifier les parcours d’inscription, approbation, refus et accès administrateur global.

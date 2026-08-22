@@ -10,8 +10,13 @@ export const supabase = createClient(
   { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } },
 );
 
-/** Vérifie le rôle plateforme côté Supabase, sans dépendre d’une lecture directe RLS. */
+const OWNER_PLATFORM_EMAIL = "baalhassane522@gmail.com";
+
+/** Vérifie le rôle plateforme côté Supabase et reconnaît le compte propriétaire explicitement désigné. */
 export async function hasPlatformAdminRole() {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
   const { data, error } = await supabase.rpc("is_platform_admin");
-  return !error && data === true;
+  if (!error && data === true) return true;
+  return user.email?.trim().toLowerCase() === OWNER_PLATFORM_EMAIL;
 }
