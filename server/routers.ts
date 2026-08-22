@@ -23,7 +23,7 @@ export const appRouter = router({
 
   media: router({
     createUploadSignature: publicProcedure
-      .input(z.object({ schoolId: z.string().uuid(), kind: z.enum(["student-photo", "school-logo", "user-avatar"]) }))
+      .input(z.object({ schoolId: z.string().uuid(), kind: z.enum(["student-photo", "school-logo", "user-avatar", "school-document"]) }))
       .mutation(async ({ ctx, input }) => {
         const token = ctx.req.headers.authorization?.replace(/^Bearer\s+/i, "");
         const url = "https://ljvnnpwwmhzdctvflsxb.supabase.co";
@@ -55,7 +55,7 @@ export const appRouter = router({
         return {
           apiKey,
           cloudName,
-          endpoint: `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          endpoint: `https://api.cloudinary.com/v1_1/${cloudName}/${input.kind === "school-document" ? "raw" : "image"}/upload`,
           ...signature,
         };
       }),

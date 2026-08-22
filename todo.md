@@ -74,6 +74,7 @@
 - [x] Restreindre en base l’écriture des matières, évaluations et notes aux rôles pédagogiques autorisés.
 - [ ] Ajouter un relevé individuel imprimable des évaluations et notes par élève.
 - [ ] Ajouter les reçus, échéanciers, impayés et rappels de paiement configurables par école.
+- [ ] Ajouter le dépôt sécurisé de documents d’établissement avec catégorie, échéance et accès contrôlé.
 - [ ] Ajouter des imports et exports CSV contrôlés pour élèves, classes, paiements et préinscriptions.
 - [ ] Ajouter communication, journal d’activité, notifications et préparation multilingue/multidevise.
 - [x] Masquer la création de compte sur le parcours plateforme et n’autoriser que la connexion au compte super-administrateur existant.
