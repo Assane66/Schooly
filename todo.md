@@ -27,3 +27,9 @@
 - [x] Créer une entrée de connexion super-administrateur explicitement séparée du parcours établissement.
 - [x] Distinguer visuellement le portail de supervision du tableau de bord directeur.
 - [x] Afficher au propriétaire un guide clair d’activation de son accès super-administrateur.
+- [x] Inventorier le code Next.js/Supabase récemment poussé sur GitHub et ses fonctionnalités.
+- [x] Comparer le schéma et les parcours GitHub aux données Supabase déjà déployées.
+- [ ] Fusionner les fonctions compatibles du code GitHub sans perdre la gouvernance super-administrateur.
+- [ ] Vérifier et publier la version fusionnée sur GitHub et Schooly.
+- [ ] Ajouter la préinscription publique par code établissement, adaptée du code GitHub et enregistrée dans Supabase.
+- [ ] Ajouter la liste et le traitement des demandes de préinscription dans l’espace établissement.
