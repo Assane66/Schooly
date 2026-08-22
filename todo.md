@@ -50,6 +50,8 @@
 - [x] Ajouter le statut mensuel payé / impayé par élève et le relevé de paiement associé.
 - [x] Générer une carte QR élève permettant la consultation contrôlée de son statut de paiement.
 - [ ] Limiter la version initiale aux structures primaire, collège et lycée ; reporter les facultés universitaires.
+- [ ] Ajouter une validation Supabase empêchant la création de structures universitaires en version initiale.
+- [ ] Restreindre les formulaires Schooly aux cycles primaire, collège et lycée, y compris pour les créations ultérieures.
 - [x] Ajouter des rôles d’école personnalisables avec permissions enregistrées par directeur.
 - [x] Créer l’interface directeur de gestion des rôles et des permissions déléguées.
 - [x] Autoriser la délégation contrôlée des paiements aux rôles comptable, secrétaire ou administratif.
