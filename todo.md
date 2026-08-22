@@ -16,6 +16,8 @@
 - [x] Préparer le stockage et l’affichage des images via Cloudinary.
 - [x] Ajouter un upload Cloudinary signé pour les photos d’élèves et enregistrer les métadonnées dans Supabase.
 - [ ] Vérifier les parcours de création d’école, connexion et tableau de bord avec une session Supabase réelle.
+- [ ] Corriger la confirmation et la connexion d’un compte directeur après création d’école.
+- [ ] Professionnaliser les e-mails de confirmation Supabase avec l’identité Schooly.
 - [x] Documenter la configuration et préparer l’export du dépôt vers GitHub.
 - [ ] Auditer le code historique distinct à fusionner dès qu’il est disponible dans GitHub.
 - [ ] Fusionner les fonctions compatibles du code historique fourni avec l’architecture Schooly connectée.
@@ -77,7 +79,10 @@
 - [ ] Ajouter le dépôt sécurisé de documents d’établissement avec catégorie, échéance et accès contrôlé.
 - [ ] Ajouter des imports et exports CSV contrôlés pour élèves, classes, paiements et préinscriptions.
 - [ ] Ajouter communication, journal d’activité, notifications et préparation multilingue/multidevise.
-- [ ] Ajouter un tableau de communication interne avec annonces datées et audience ciblée par école.
+- [x] Ajouter un tableau de communication interne avec annonces datées et audience ciblée par école.
 - [x] Masquer la création de compte sur le parcours plateforme et n’autoriser que la connexion au compte super-administrateur existant.
 - [x] Afficher un relevé mensuel complet par élève dans le module des paiements avec un état d’erreur explicite.
 - [x] Aligner la page de consultation QR avec le format imbriqué renvoyé par la fonction Supabase de vérification.
+- [x] Diagnostiquer la non-réception des e-mails de confirmation Supabase lors des inscriptions directeur.
+- [ ] Rétablir un envoi de confirmation fiable et valider la réception avec une nouvelle inscription directeur.
+- [x] Ajouter un renvoi explicite du lien de confirmation dans le parcours d’inscription directeur.
