@@ -77,6 +77,7 @@
 - [ ] Ajouter le dépôt sécurisé de documents d’établissement avec catégorie, échéance et accès contrôlé.
 - [ ] Ajouter des imports et exports CSV contrôlés pour élèves, classes, paiements et préinscriptions.
 - [ ] Ajouter communication, journal d’activité, notifications et préparation multilingue/multidevise.
+- [ ] Ajouter un tableau de communication interne avec annonces datées et audience ciblée par école.
 - [x] Masquer la création de compte sur le parcours plateforme et n’autoriser que la connexion au compte super-administrateur existant.
 - [x] Afficher un relevé mensuel complet par élève dans le module des paiements avec un état d’erreur explicite.
 - [x] Aligner la page de consultation QR avec le format imbriqué renvoyé par la fonction Supabase de vérification.
