@@ -91,4 +91,6 @@
 - [x] Proposer les cycles élémentaire, collège et lycée sans possibilité universitaire dans l’inscription.
 - [x] Générer des classes initiales modifiables selon les cycles sélectionnés avant la finalisation.
 - [ ] Demander le mot de passe à la dernière étape, puis créer le compte et l’établissement avant la confirmation e-mail.
-- [ ] Enregistrer les coordonnées professionnelles fournies lors de l’inscription dans les données de l’établissement.
+- [x] Enregistrer les coordonnées professionnelles fournies lors de l’inscription dans les données de l’établissement.
+- [x] Afficher une erreur explicite si les coordonnées professionnelles ne peuvent pas être enregistrées lors de la création de l’école.
+- [ ] Valider avec une vraie inscription que les coordonnées de l’école sont enregistrées dans Supabase.
