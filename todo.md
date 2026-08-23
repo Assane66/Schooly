@@ -94,3 +94,5 @@
 - [x] Enregistrer les coordonnées professionnelles fournies lors de l’inscription dans les données de l’établissement.
 - [x] Afficher une erreur explicite si les coordonnées professionnelles ne peuvent pas être enregistrées lors de la création de l’école.
 - [ ] Valider avec une vraie inscription que les coordonnées de l’école sont enregistrées dans Supabase.
+- [x] Produire un guide de reprise complet pour continuer Schooly depuis un autre éditeur de code.
+- [ ] Vérifier la synchronisation finale de la branche GitHub manus/supabase-integration avant transfert.
